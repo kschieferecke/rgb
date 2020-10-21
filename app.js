@@ -11,23 +11,24 @@ var score = 0;
 var scoreDisplay = document.querySelector("#scoreDisplay"); 
 var resetPressed = true; 
 
-
+//this is the function that start the game//
 init();
 
 function init(){
 	setupModeButtons();
 	setupSquares();
-	var lsScore = localStorage.getItem('score');
+	var lsScore = sessionStorage.getItem('score');
 	if( lsScore !== null ){
 		score = lsScore; 
 		scoreDisplay.textContent = score;
 	}
 	else {
-		localStorage.setItem('score', score); 
+		sessionStorage.setItem('score', score); 
 	}
 	reset();
 }
 
+//this function is the "set up" function. It lets the user select "new colors" "easy" or "hard" mode.//
 function setupModeButtons(){
 	for(var i = 0; i < modeButtons.length; i++){
 		modeButtons[i].addEventListener("click", function(){
@@ -40,6 +41,8 @@ function setupModeButtons(){
 	}
 }
 
+//this function is the game. The user clicks the color squares and if it is right,
+//it will display the "winning" color. The user is also able to click "play again"
 function setupSquares(){
 	for(var i = 0; i < squares.length; i++){
 	//add click listeners to squares
@@ -59,19 +62,20 @@ function setupSquares(){
 					resetPressed = false;
 				}
 				scoreDisplay.textContent = score;
-				localStorage.setItem('score', score);
+				sessionStorage.setItem('score', score);
 			} else {
 				this.style.background = "#232323";
 				messageDisplay.textContent = "Try Again"
 				score--;
 				scoreDisplay.textContent = score; 
-				localStorage.setItem('score', score);
+				sessionStorage.setItem('score', score);
 			}
 		});
 	}
 }
 
-
+//this function is ansyncronistic (sp?). this is the function that displays the RGB color
+// as well as changes the name "rgb (xx, xx, xx)" to the named match of the color. 
 async function updateColorName(){
 	const regex = /\([^\)]+\)/g; 
 	var rgbColors = pickedColor.match(regex); 
@@ -92,6 +96,7 @@ async function updateColorName(){
 	}
 }
 
+//this function resets the colors one sees using the "new colors" button.
 function reset(){
 	resetPressed = true;
 	colors = generateRandomColors(numSquares);
@@ -117,6 +122,9 @@ resetButton.addEventListener("click", function(){
 	reset();
 })
 
+//the rest of the functions below are math equations that are able to generate
+//the random RGB color that is text displayed, as well as the random RGB colors
+//that are in the color squares. 
 function changeColors(color){
 	//loop through all squares
 	for(var i = 0; i < squares.length; i++){
